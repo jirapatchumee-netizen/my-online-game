@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula AI: Rogue Defender</title>
+    <meta name="description" content="Nebula AI: Rogue Defender – a space shooter powered by an AI backend. Control your ship manually or let the neural-network autopilot take over!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <h1>NEBULA AI</h1>
+            <span class="logo-badge">ROGUE DEFENDER v4.0</span>
+        </div>
+        <div class="connection-status">
+            <div id="status-dot" class="status-dot"></div>
+            <span id="status-text">OFFLINE</span>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <!-- LEFT PANEL: CONTROLS & UPGRADES -->
+        <div class="panel">
+            <h2 class="panel-title">ระบบควบคุมยาน</h2>
+
+            <div class="toggle-group">
+                <button id="mode-manual-btn" class="toggle-btn active">HUMAN PILOT</button>
+                <button id="mode-ai-btn" class="toggle-btn">AI AUTO-PILOT</button>
+            </div>
+
+            <div class="guide-list">
+                <div class="guide-item">
+                    <span class="key-badge">W</span> <span class="key-badge">A</span> <span class="key-badge">S</span> <span class="key-badge">D</span>
+                    <span>เคลื่อนที่ยาน</span>
+                </div>
+                <div class="guide-item">
+                    <span class="key-badge">Mouse</span>
+                    <span>เล็งและคลิกเพื่อยิงเลเซอร์</span>
+                </div>
+                <div class="guide-item">
+                    <span class="key-badge">Space</span>
+                    <span>ยิงเลเซอร์ (Keyboard)</span>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.08); margin: 14px 0;">
+
+            <h2 class="panel-title">อัพเกรดยานรบ (UPGRADES)</h2>
+            <div class="upgrades-container">
+                <!-- Upgrade: Fire Rate -->
+                <div class="upgrade-card">
+                    <div class="upgrade-info">
+                        <span class="upgrade-name">⚡ Blaster Rate</span>
+                        <span class="upgrade-desc">ยิงกระสุนปืนกลเลเซอร์เร็วขึ้น</span>
+                        <span id="stat-firerate" class="upgrade-stats">Lvl: 1</span>
+                    </div>
+                    <button id="upgrade-firerate-btn" class="upgrade-buy" disabled>
+                        <span>UPGRADE</span>
+                        <span id="cost-firerate">15 💰</span>
+                    </button>
+                </div>
+
+                <!-- Upgrade: Damage -->
+                <div class="upgrade-card">
+                    <div class="upgrade-info">
+                        <span class="upgrade-name">🔥 Plasma Damage</span>
+                        <span class="upgrade-desc">เพิ่มความเสียหายให้กับเลเซอร์</span>
+                        <span id="stat-damage" class="upgrade-stats">Lvl: 1</span>
+                    </div>
+                    <button id="upgrade-damage-btn" class="upgrade-buy" disabled>
+                        <span>UPGRADE</span>
+                        <span id="cost-damage">20 💰</span>
+                    </button>
+                </div>
+
+                <!-- Upgrade: Shield -->
+                <div class="upgrade-card">
+                    <div class="upgrade-info">
+                        <span class="upgrade-name">🛡️ Max Shield</span>
+                        <span class="upgrade-desc">เพิ่มระยะเวลาความอมตะของเกราะ</span>
+                        <span id="stat-shield" class="upgrade-stats">Lvl: 1</span>
+                    </div>
+                    <button id="upgrade-shield-btn" class="upgrade-buy" disabled>
+                        <span>UPGRADE</span>
+                        <span id="cost-shield">25 💰</span>
+                    </button>
+                </div>
+
+                <!-- Upgrade: Speed -->
+                <div class="upgrade-card">
+                    <div class="upgrade-info">
+                        <span class="upgrade-name">🚀 Fusion Thrusters</span>
+                        <span class="upgrade-desc">เพิ่มความเร็วในการเคลื่อนที่</span>
+                        <span id="stat-speed" class="upgrade-stats">Lvl: 1</span>
+                    </div>
+                    <button id="upgrade-speed-btn" class="upgrade-buy" disabled>
+                        <span>UPGRADE</span>
+                        <span id="cost-speed">10 💰</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER PANEL: GAME CANVAS -->
+        <div class="center-column">
+            <div class="canvas-container">
+                <canvas id="gameCanvas" width="800" height="600"></canvas>
+            </div>
+
+            <div class="ui-bar">
+                <button id="start-button" class="glow-btn primary-btn">เริ่มการเชื่อมต่อระบบ</button>
+                <button id="sound-btn" class="sound-toggle-btn" title="เปิด/ปิด เสียง">🔊</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: TELEMETRY & CONSOLE -->
+        <div class="panel">
+            <h2 class="panel-title">โทรมาตรยาน (TELEMETRY)</h2>
+            <div class="stats-container">
+                <div class="stat-row">
+                    <span class="stat-label">เกราะกำบัง (SHIELD):</span>
+                    <span id="hud-shield-status" class="stat-value highlight-cyan">ACTIVE</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">พลังชีวิตยาน (HP):</span>
+                    <span id="hud-hp" class="stat-value">100 / 100</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">ระดับความยาก (WAVE):</span>
+                    <span id="hud-wave" class="stat-value highlight-yellow">1</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">เศษเหล็กอัพเกรด (SCRAP):</span>
+                    <span id="hud-scrap" class="stat-value highlight-green">0 💰</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">คะแนนความรอด (SCORE):</span>
+                    <span id="hud-score" class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">ศัตรูที่ทำลาย (KILLS):</span>
+                    <span id="hud-kills" class="stat-value">0</span>
+                </div>
+            </div>
+
+            <h2 class="panel-title">โครงข่ายความนึกคิด (AI NEURAL LINK)</h2>
+            <div class="console-wrapper">
+                <div id="console-log" class="console-log">
+                    <div class="console-line">ระบบพร้อมเชื่อมต่อแล้ว...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        NEBULA AI: ROGUE DEFENDER &copy; 2026. พัฒนาระบบขับเคลื่อนอัตโนมัติด้วยโครงข่ายประสาทจำลอง AI.
+    </footer>
+
+    <script src="game.js"></script>
+</body>
+</html>
