@@ -28,6 +28,5 @@ COPY frontend/ ./frontend/
 # 7. Expose the default development port (Railway overrides via $PORT)
 EXPOSE 8000
 
-# 8. Start the server
-#    uvicorn reads the PORT env var; the app itself also reads it as fallback.
-CMD ["sh", "-c", "uvicorn backend.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# 8. Start the server on port 8000
+CMD ["uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
